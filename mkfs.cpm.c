@@ -22,7 +22,7 @@
 /*}}}*/
 
 /* mkfs -- make file system */ /*{{{*/
-static int mkfs(struct cpmSuperBlock *drive, const char *name, const char *format, const char *label, char *bootTracks, int timeStamps)
+static int mkfs(struct cpmSuperBlock *drive, const char *name, const char *format, const char *label, char *bootTracks, int timeStamps, int partition)
 {
   /* variables */ /*{{{*/
   unsigned int i;
@@ -116,7 +116,7 @@ static int mkfs(struct cpmSuperBlock *drive, const char *name, const char *forma
       fprintf(stderr,"%s: can not open %s (%s)\n",cmd,name,err);
       exit(1);
     }
-    cpmReadSuper(&super,&root,format);
+    cpmReadSuper(&super,&root,format,partition);
 
     records=root.sb->maxdir/8;
     if (!(ds=malloc(records*128)))
@@ -165,12 +165,13 @@ int main(int argc, char *argv[]) /*{{{*/
   struct cpmInode root;
   const char *label="unlabeled";
   int timeStamps=0;
+  int partition=0;
   size_t bootTrackSize,used;
   char *bootTracks;
   const char *boot[4]={(const char*)0,(const char*)0,(const char*)0,(const char*)0};
 
   if (!(format=getenv("CPMTOOLSFMT"))) format=FORMAT;
-  while ((c=getopt(argc,argv,"b:f:L:th?"))!=EOF) switch(c)
+  while ((c=getopt(argc,argv,"b:f:L:P:th?"))!=EOF) switch(c)
   {
     case 'b':
     {
@@ -185,6 +186,7 @@ int main(int argc, char *argv[]) /*{{{*/
     case 'L': label=optarg; break;
     case 't': timeStamps=1; break;
     case 'h':
+    case 'P': partition=atoi(optarg); break;
     case '?': usage=1; break;
   }
 
@@ -193,11 +195,15 @@ int main(int argc, char *argv[]) /*{{{*/
 
   if (usage)
   {
-    fprintf(stderr,"Usage: %s [-f format] [-b boot] [-L label] [-t] image\n",cmd);
+    fprintf(stderr,"Usage: %s [-f format] [-P partition] [-b boot] [-L label] [-t] image\n",cmd);
     exit(1);
   }
   drive.dev.opened=0;
-  cpmReadSuper(&drive,&root,format);
+  if (cpmReadSuper(&drive,&root,format,partition)==-1)
+  {
+    fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
+    exit(1);
+  }
   bootTrackSize=drive.boottrk*drive.secLength*drive.sectrk;
   if ((bootTracks=malloc(bootTrackSize))==(void*)0)
   {
@@ -205,7 +211,7 @@ int main(int argc, char *argv[]) /*{{{*/
     exit(1);
   }
   memset(bootTracks,0xe5,bootTrackSize);
-  used=0; 
+  used=0;
   for (c=0; c<4 && boot[c]; ++c)
   {
     int fd;
@@ -224,7 +230,7 @@ int main(int argc, char *argv[]) /*{{{*/
     used+=size;
     close(fd);
   }
-  if (mkfs(&drive,image,format,label,bootTracks,timeStamps)==-1)
+  if (mkfs(&drive,image,format,label,bootTracks,timeStamps,partition)==-1)
   {
     fprintf(stderr,"%s: can not make new file system: %s\n",cmd,boo);
     exit(1);

@@ -27,17 +27,19 @@ int main(int argc, char *argv[]) /*{{{*/
   int c,i,usage=0,exitcode=0;
   struct cpmSuperBlock drive;
   struct cpmInode root;
+  int partition = 0;
   int gargc;
   char **gargv;
   /*}}}*/
 
   /* parse options */ /*{{{*/
   if (!(format=getenv("CPMTOOLSFMT"))) format=FORMAT;
-  while ((c=getopt(argc,argv,"T:f:h?"))!=EOF) switch(c)
+  while ((c=getopt(argc,argv,"T:f:P:h?"))!=EOF) switch(c)
   {
     case 'T': devopts=optarg; break;
     case 'f': format=optarg; break;
     case 'h':
+    case 'P': partition=atoi(optarg); break;
     case '?': usage=1; break;
   }
 
@@ -46,7 +48,7 @@ int main(int argc, char *argv[]) /*{{{*/
 
   if (usage)
   {
-    fprintf(stderr,"Usage: %s [-f format] [-T dsktype] image pattern ...\n",cmd);
+    fprintf(stderr,"Usage: %s [-f format] [-P partition] [-T dsktype] image pattern ...\n",cmd);
     exit(1);
   }
   /*}}}*/
@@ -56,7 +58,7 @@ int main(int argc, char *argv[]) /*{{{*/
     fprintf(stderr,"%s: cannot open %s (%s)\n",cmd,image,err);
     exit(1);
   }
-  if (cpmReadSuper(&drive,&root,format)==-1)
+  if (cpmReadSuper(&drive,&root,format,partition)==-1)
   {
     fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
     exit(1);

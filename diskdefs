@@ -72,7 +72,7 @@ end
 diskdef cpm86-720
   seclen 512
   tracks 160
-  sectrk 9 
+  sectrk 9
   blocksize 2048
   maxdir 256
   skew 1
@@ -144,8 +144,8 @@ diskdef myz80
   libdsk:format pcw720
 end
 
-# Despite being Amstrad formats, CPC System and CPC Data don't have an Amstrad 
-# superblock. You'll need to use libdsk to access them because the Linux 
+# Despite being Amstrad formats, CPC System and CPC Data don't have an Amstrad
+# superblock. You'll need to use libdsk to access them because the Linux
 # and Windows kernel drivers won't touch them.
 diskdef cpcsys
   seclen 512
@@ -462,7 +462,7 @@ diskdef scp800
   boottrk 0
   os 2.2
   libdsk:format scp800
-end 
+end
 
 # robotron Z9001 800k (80*2* 5,1024 0 OFS 6k DIR) 5.25"
 # setfdprm /dev/fd1 ds dd ssize=1024 cyl=80 sect=5 head=2 dtr=1 fm=0
@@ -475,7 +475,7 @@ diskdef z9001
   skew 0
   boottrk 0
   os 2.2
-end 
+end
 
 # Visual Technology Visual 1050 computer
 diskdef v1050
@@ -600,11 +600,11 @@ end
 
 diskdef nsfd
   seclen 512
-  tracks 70 
-  sectrk 10 
+  tracks 70
+  sectrk 10
   blocksize 2048
   maxdir 64
-  skew 5  
+  skew 5
   boottrk 2
   os 2.2
 end
@@ -613,16 +613,16 @@ end
 #North Star CP/M Virtual-Disk file on Hard Disk
 # prepared with allocation factor = 4
 # as in "CR CPMB 4000 4"
-# needs to be copied off hard drive before you can 
+# needs to be copied off hard drive before you can
 # work on it with cpmtools
 
 diskdef nshd4
   seclen 512
   tracks 512
-  sectrk 16 
+  sectrk 16
   blocksize 4096
   maxdir 256
-  skew 0  
+  skew 0
   boottrk 0
   os 2.2
 end
@@ -637,10 +637,10 @@ end
 diskdef nshd8
   seclen 512
   tracks 1024
-  sectrk 16 
+  sectrk 16
   blocksize 8192
   maxdir 256
-  skew 0  
+  skew 0
   boottrk 0
   os 2.2
 end
@@ -781,7 +781,7 @@ diskdef pmc101
   boottrk 2
   os 3
 end
-  
+
 # BEGIN td143ssdd8  Turbo Dos 1.43 - SSDD 8" - 512 x 16
 # Test OK - image size = 630,784, from Don Maslin's archive
 diskdef td143ssdd8
@@ -793,7 +793,7 @@ diskdef td143ssdd8
   skew 0
   boottrk 0
   os 2.2
-# DENSITY MFM ,LOW 
+# DENSITY MFM ,LOW
 end
 
 # BEGIN headsdd8  Heath H89, Magnolia CP/M - SSDD 8" - 512 x 16
@@ -807,7 +807,7 @@ diskdef heassdd8
   skew 0
   boottrk 2
   os 2.2
-# DENSITY MFM ,LOW 
+# DENSITY MFM ,LOW
 end
 
 # ZEN7  Zenith Z-100 - SSDD 48 tpi 5.25" - 512 x 8
@@ -892,7 +892,7 @@ diskdef morsddd
   skew 3
   boottrk 2
   os 2.2
-# DENSITY MFM ,LOW 
+# DENSITY MFM ,LOW
 # BSH 4 BLM 15 EXM 1 DSM 94 DRM 127 AL0 0C0H AL1 0 OFS 2
 end
 
@@ -907,7 +907,7 @@ diskdef osb1sssd
   skew 2
   boottrk 3
   os 2.2
-# DENSITY MFM ,LOW 
+# DENSITY MFM ,LOW
 # BSH 4 BLM 15 EXM 1 DSM 45 DRM 63 AL0 080H AL1 0 OFS 3
 end
 
@@ -922,7 +922,7 @@ diskdef altdsdd
   skew 0
   boottrk 2
   os 3
-# DENSITY MFM ,HIGH 
+# DENSITY MFM ,HIGH
 # BSH 5 BLM 31 EXM 3 DSM 176 DRM 176 AL0 0C0H AL1 0 OFS 2
 end
 
@@ -939,7 +939,7 @@ diskdef trsomsssd
   skew 4
   boottrk 3
   os 2.2
-# DENSITY FM ,LOW 
+# DENSITY FM ,LOW
 # BSH 3 BLM 7 EXM 0 DSM 71 DRM 63 AL0 0C0H AL1 0 OFS 3
 end
 
@@ -1471,7 +1471,7 @@ end
 #       the DPB for RAM Discs includes blocks on the last incomplete track
 # Tracks = 262144/(26*128) = 78.76
 # Data is in 1024 byte blocks, on track 2 onwards
-# Blocks = (262144-2*26*128)/1024 = 249, which agrees with DPB 
+# Blocks = (262144-2*26*128)/1024 = 249, which agrees with DPB
 # Blocks = ((78-2)*26*128)/1024 = 247, so we need the extra 0.76 track
 diskdef memotech-type50
   seclen 128
@@ -1766,7 +1766,7 @@ diskdef ampro400d
   boottrk 2
   os 2.2
   libdsk:format ampro400d
-# DENSITY MFM ,LOW 
+# DENSITY MFM ,LOW
 # BSH 4 BLM 15 EXM 1 DSM 194 DRM 127 AL0 0C0H AL1 0 OFS 2
 end
 
@@ -1782,7 +1782,7 @@ diskdef ampdsdd80
   boottrk 2
   os 2.2
   libdsk:format ampro800
-# DENSITY MFM ,LOW 
+# DENSITY MFM ,LOW
 # BSH 4 BLM 15 EXM 1 DSM 194 DRM 127 AL0 0C0H AL1 0 OFS 2
 end
 
@@ -1874,4 +1874,29 @@ diskdef mds-sd
   skew 0
   boottrk 2
   os 2.2
+end
+
+# Z280RC - Bill Shen's Z280RC Single Board Z280 system on a RC2014 board
+# <https://www.retrobrewcomputers.org/doku.php?id=builderpages:plasmo:z280rc>
+diskdef z280rc
+  seclen 512
+  tracks 63
+  sectrk 256
+  blocksize 4096
+  maxdir 512
+  skew 0
+  boottrk 1
+  os 3
+end
+
+diskdef z280rcP
+  seclen 512
+  tracks 64
+  sectrk 256
+  blocksize 4096
+  maxdir 512
+  skew 0
+  boottrk 0
+  os 3
+  offset 64trk
 end

@@ -55,7 +55,7 @@ static void olddir(char **dirent, int entries)
       if (l && (l%4)==0) {
 	l = 0;
 	putchar('\n');
-      }	
+      }
     }
     if (l%4) {
 	putchar('\n');
@@ -185,7 +185,7 @@ static void old3dir(char **dirent, int entries, struct cpmInode *ino)
           printf(" %6.1ld ",(long)(statbuf.size/128));
           putchar((attrib & CPM_ATTR_F1)   ? '1' : ' ');
           putchar((attrib & CPM_ATTR_F2)   ? '2' : ' ');
-          putchar((attrib & CPM_ATTR_F3)   ? '3' : ' ');          
+          putchar((attrib & CPM_ATTR_F3)   ? '3' : ' ');
           putchar((attrib & CPM_ATTR_F4)   ? '4' : ' ');
           putchar((statbuf.mode&(S_IWUSR|S_IWGRP|S_IWOTH)) ? ' ' : 'R');
           putchar((attrib & CPM_ATTR_SYS)  ? 'S' : ' ');
@@ -193,7 +193,7 @@ static void old3dir(char **dirent, int entries, struct cpmInode *ino)
           printf("      ");
           if      (attrib & CPM_ATTR_PWREAD)  printf("Read   ");
           else if (attrib & CPM_ATTR_PWWRITE) printf("Write  ");
-          else if (attrib & CPM_ATTR_PWDEL)   printf("Delete "); 
+          else if (attrib & CPM_ATTR_PWDEL)   printf("Delete ");
           else printf("None   ");
           if (statbuf.mtime)
           {
@@ -317,7 +317,7 @@ static void lsattr(char **dirent, int entries, struct cpmInode *ino)
 
         cpmNamei(ino,dirent[i],&file);
         cpmStat(&file,&statbuf);
-        cpmAttrGet(&file, &attrib); 
+        cpmAttrGet(&file, &attrib);
 
         putchar ((attrib & CPM_ATTR_F1)      ? '1' : '-');
         putchar ((attrib & CPM_ATTR_F2)      ? '2' : '-');
@@ -350,6 +350,7 @@ int main(int argc, char *argv[])
   struct cpmInode root;
   int style=0;
   int changetime=0;
+  int partition=0;
   int inode=0;
   char **gargv;
   int gargc;
@@ -359,7 +360,7 @@ int main(int argc, char *argv[])
 
   /* parse options */ /*{{{*/
   if (!(format=getenv("CPMTOOLSFMT"))) format=FORMAT;
-  while ((c=getopt(argc,argv,"cT:f:ih?dDFlA"))!=EOF) switch(c)
+  while ((c=getopt(argc,argv,"cT:f:P:ih?dDFlA"))!=EOF) switch(c)
   {
     case 'f': format=optarg; break;
     case 'T': devopts=optarg; break;
@@ -371,6 +372,7 @@ int main(int argc, char *argv[])
     case 'l': style=4; break;
     case 'A': style=5; break;
     case 'c': changetime=1; break;
+    case 'P': partition=atoi(optarg); break;
     case 'i': inode=1; break;
   }
 
@@ -379,17 +381,17 @@ int main(int argc, char *argv[])
 
   if (usage)
   {
-    fprintf(stderr,"Usage: %s [-f format] [-T libdsk-type] [-d|-D|-F|-A|[-l][-c][-i]] image [file ...]\n",cmd);
+    fprintf(stderr,"Usage: %s [-f format] [-T libdsk-type] [-P partition] [-d|-D|-F|-A|[-l][-c][-i]] image [file ...]\n",cmd);
     exit(1);
   }
   /*}}}*/
   /* open image */ /*{{{*/
-  if ((err=Device_open(&drive.dev,image,O_RDONLY,devopts))) 
+  if ((err=Device_open(&drive.dev,image,O_RDONLY,devopts)))
   {
     fprintf(stderr,"%s: cannot open %s (%s)\n",cmd,image,err);
     exit(1);
   }
-  if (cpmReadSuper(&drive,&root,format)==-1)
+  if (cpmReadSuper(&drive,&root,format,partition)==-1)
   {
     fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
     exit(1);
@@ -400,7 +402,7 @@ int main(int argc, char *argv[])
   if (style==1) olddir(gargv,gargc);
   else if (style==2) oldddir(gargv,gargc,&root);
   else if (style==3) old3dir(gargv,gargc,&root);
-  else if (style==5) lsattr(gargv, gargc, &root); 
+  else if (style==5) lsattr(gargv, gargc, &root);
   else ls(gargv,gargc,&root,style==4,changetime,inode);
   exit(0);
 }

@@ -145,6 +145,7 @@ struct cpmSuperBlock
   int skew;
   int boottrk;
   off_t offset;
+  off_t partition;
   int type;
   int size;
   int extents; /* logical extents per physical extent */
@@ -183,7 +184,7 @@ extern const char *boo;
 int match(const char *a, const char *pattern);
 void cpmglob(int opti, int argc, char * const argv[], struct cpmInode *root, int *gargc, char ***gargv);
 
-int cpmReadSuper(struct cpmSuperBlock *drive, struct cpmInode *root, const char *format);
+int cpmReadSuper(struct cpmSuperBlock *drive, struct cpmInode *root, const char *format,int partition);
 int cpmNamei(const struct cpmInode *dir, const char *filename, struct cpmInode *i);
 void cpmStatFS(const struct cpmInode *ino, struct cpmStatFS *buf);
 int cpmUnlink(const struct cpmInode *dir, const char *fname);

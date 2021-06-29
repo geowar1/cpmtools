@@ -74,7 +74,7 @@ static int cpmToUnix(const struct cpmInode *root, const char *src, const char *d
             if (buf[j]=='\032') goto endwhile;
             if (crpending)
             {
-              if (buf[j]=='\n') 
+              if (buf[j]=='\n')
               {
                 if (putc('\n',ufp)==EOF) { fprintf(stderr,"%s: can not write %s: %s\n",cmd,dest,strerror(errno)); exitcode=1; ohno=1; goto endwhile; }
                 crpending=0;
@@ -111,10 +111,10 @@ static int cpmToUnix(const struct cpmInode *root, const char *src, const char *d
 
 static void usage(void) /*{{{*/
 {
-  fprintf(stderr,"Usage: %s [-f format] [-p] [-t] image user:file file\n",cmd);
-  fprintf(stderr,"       %s [-f format] [-p] [-t] image user:file ... directory\n",cmd);
-  fprintf(stderr,"       %s [-f format] [-p] [-t] image file user:file\n",cmd);
-  fprintf(stderr,"       %s [-f format] [-p] [-t] image file ... user:\n",cmd);
+  fprintf(stderr,"Usage: %s [-f format] [-P partition] [-p] [-t] image user:file file\n",cmd);
+  fprintf(stderr,"       %s [-f format] [-P partition] [-p] [-t] image user:file ... directory\n",cmd);
+  fprintf(stderr,"       %s [-f format] [-P partition] [-p] [-t] image file user:file\n",cmd);
+  fprintf(stderr,"       %s [-f format] [-P partition] [-p] [-t] image file ... user:\n",cmd);
   exit(1);
 }
 /*}}}*/
@@ -130,19 +130,21 @@ int main(int argc, char *argv[])
   struct cpmInode root;
   struct cpmSuperBlock super;
   int exitcode=0;
+  int partition=0;
   int gargc;
   char **gargv;
   /*}}}*/
 
   /* parse options */ /*{{{*/
   if (!(format=getenv("CPMTOOLSFMT"))) format=FORMAT;
-  while ((c=getopt(argc,argv,"T:f:h?pt"))!=EOF) switch(c)
+  while ((c=getopt(argc,argv,"T:f:P:h?pt"))!=EOF) switch(c)
   {
     case 'T': devopts=optarg; break;
     case 'f': format=optarg; break;
     case 'h':
     case '?': usage(); break;
     case 'p': preserve=1; break;
+    case 'P': partition=atoi(optarg); break;
     case 't': text=1; break;
   }
   /*}}}*/
@@ -181,7 +183,7 @@ int main(int argc, char *argv[])
     fprintf(stderr,"%s: cannot open %s (%s)\n",cmd,image,err);
     exit(1);
   }
-  if (cpmReadSuper(&super,&root,format)==-1)
+  if (cpmReadSuper(&super,&root,format,partition)==-1)
   {
     fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
     exit(1);
@@ -191,7 +193,7 @@ int main(int argc, char *argv[])
   {
     int i;
     char *last=argv[argc-1];
-    
+
     cpmglob(optind,argc-1,argv,&root,&gargc,&gargv);
     /* trying to copy multiple files to a file? */
     if (gargc>1 && !todir) usage();

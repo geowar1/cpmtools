@@ -181,17 +181,19 @@ int main(int argc, char *argv[]) /*{{{*/
   int c,usage=0;
   off_t pos;
   chtype ch;
+  int partition=0;
   int reload;
   char *buf;
   /*}}}*/
 
   /* parse options */ /*{{{*/
   if (!(format=getenv("CPMTOOLSFMT"))) format=FORMAT;
-  while ((c=getopt(argc,argv,"T:f:h?"))!=EOF) switch(c)
+  while ((c=getopt(argc,argv,"T:f:P:h?"))!=EOF) switch(c)
   {
     case 'f': format=optarg; break;
     case 'T': devopts=optarg; break;
     case 'h':
+    case 'P': partition=atoi(optarg); break;
     case '?': usage=1; break;
   }
 
@@ -200,17 +202,17 @@ int main(int argc, char *argv[]) /*{{{*/
 
   if (usage)
   {
-    fprintf(stderr,"Usage: fsed.cpm [-f format] image\n");
+    fprintf(stderr,"Usage: fsed.cpm [-f format] [-P partition] image\n");
     exit(1);
   }
   /*}}}*/
   /* open image */ /*{{{*/
-  if ((err=Device_open(&drive.dev,image,O_RDONLY,devopts))) 
+  if ((err=Device_open(&drive.dev,image,O_RDONLY,devopts)))
   {
     fprintf(stderr,"%s: cannot open %s (%s)\n",cmd,image,err);
     exit(1);
   }
-  if (cpmReadSuper(&drive,&root,format)==-1)
+  if (cpmReadSuper(&drive,&root,format,partition)==-1)
   {
     fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
     exit(1);
@@ -317,7 +319,7 @@ int main(int argc, char *argv[]) /*{{{*/
       msg="Directory area"; move(0,(COLS-strlen(msg))/2); printw(msg);
       move(LINES-3,36); printw("F)orward entry     B)ackward entry");
 
-      move(13,0); printw("Entry %3d: ",entry);      
+      move(13,0); printw("Entry %3d: ",entry);
       if /* free or used directory entry */ /*{{{*/
       ((buf[entrystart]>=0 && buf[entrystart]<=(drive.type==CPMFS_P2DOS ? 31 : 15)) || buf[entrystart]==(char)0xe5)
       {
@@ -426,7 +428,7 @@ int main(int argc, char *argv[]) /*{{{*/
         else printw("not on modifiction, ");
         if (buf[entrystart+12]&0x40) printw("on access");
         else printw("not on access");
-        attroff(A_REVERSE); 
+        attroff(A_REVERSE);
         move(18,0);
         printw("Password: ");
         for (i=0; i<8; ++i)

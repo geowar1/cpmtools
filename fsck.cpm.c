@@ -577,14 +577,16 @@ int main(int argc, char *argv[])
   struct cpmSuperBlock sb;
   struct cpmInode root;
   enum Result ret;
+  int partition=0;
 
   if (!(format=getenv("CPMTOOLSFMT"))) format=FORMAT;
-  while ((c=getopt(argc,argv,"T:f:nh?"))!=EOF) switch(c)
+  while ((c=getopt(argc,argv,"T:f:P:nh?"))!=EOF) switch(c)
   {
     case 'f': format=optarg; break;
     case 'T': devopts=optarg; break;
     case 'n': norepair=1; break;
     case 'h':
+    case 'P': partition=atoi(optarg); break;
     case '?': usage=1; break;
   }
 
@@ -593,7 +595,7 @@ int main(int argc, char *argv[])
 
   if (usage)
   {
-    fprintf(stderr,"Usage: %s [-f format] [-n] image\n",cmd);
+    fprintf(stderr,"Usage: %s [-f format] [-P partition] [-n] image\n",cmd);
     exit(1);
   }
   if ((err=Device_open(&sb.dev, image, (norepair ? O_RDONLY : O_RDWR), devopts)))
@@ -608,7 +610,7 @@ int main(int argc, char *argv[])
       fprintf(stderr,"%s: cannot open %s for writing, no repair possible\n",cmd,image);
     }
   }
-  if (cpmReadSuper(&sb,&root,format)==-1)
+  if (cpmReadSuper(&sb,&root,format,partition)==-1)
   {
     fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
     exit(1);
