@@ -1034,7 +1034,7 @@ int cpmReadSuper(struct cpmSuperBlock *d, struct cpmInode *root, const char *for
   if (strcmp(format,"amstrad")==0) amsReadSuper(d,format);
   else if (strncmp(format,"diskdef",7)==0) inlineReadSuper(d,format);
   else diskdefReadSuper(d,format);
-  if (d->partition > 0) {
+  if (partition > 0) {
     d->offset*=partition;
   }
   boo = Device_setGeometry(&d->dev,d->secLength,d->sectrk,d->tracks,d->offset,d->libdskGeometry);

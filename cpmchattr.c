@@ -26,31 +26,33 @@ int main(int argc, char *argv[]) /*{{{*/
   int c,i,usage=0,exitcode=0;
   struct cpmSuperBlock drive;
   struct cpmInode root;
+  int partition=0;
   int gargc;
   char **gargv;
-  const char *attrs; 
+  const char *attrs;
   /*}}}*/
 
   /* parse options */ /*{{{*/
   if (!(format=getenv("CPMTOOLSFMT"))) format=FORMAT;
-  while ((c=getopt(argc,argv,"T:f:h?"))!=EOF) switch(c)
+  while ((c=getopt(argc,argv,"T:f:P:h?"))!=EOF) switch(c)
   {
     case 'T': devopts=optarg; break;
     case 'f': format=optarg; break;
     case 'h':
+    case 'P': partition=atoi(optarg); break;
     case '?': usage=1; break;
   }
 
   if (optind>=(argc-2)) usage=1;
-  else 
+  else
   {
     image=argv[optind++];
     attrs = argv[optind++];
-  }    
+  }
 
   if (usage)
   {
-    fprintf(stderr,"Usage: %s [-f format] [-T dsktype] image [NMrsa1234] pattern ...\n",cmd);
+    fprintf(stderr,"Usage: %s [-f format] [-P partition] [-T dsktype] image [NMrsa1234] pattern ...\n",cmd);
     exit(1);
   }
   /*}}}*/
@@ -60,7 +62,7 @@ int main(int argc, char *argv[]) /*{{{*/
     fprintf(stderr,"%s: cannot open %s (%s)\n",cmd,image,err);
     exit(1);
   }
-  if (cpmReadSuper(&drive,&root,format)==-1)
+  if (cpmReadSuper(&drive,&root,format,partition)==-1)
   {
     fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
     exit(1);
@@ -94,7 +96,7 @@ int main(int argc, char *argv[]) /*{{{*/
             case '2': mask = CPM_ATTR_F2; break;
             case '3': mask = CPM_ATTR_F3; break;
             case '4': mask = CPM_ATTR_F4; break;
-            case 'r': 
+            case 'r':
             case 'R': mask = CPM_ATTR_RO; break;
             case 's':
             case 'S': mask = CPM_ATTR_SYS; break;
@@ -102,7 +104,7 @@ int main(int argc, char *argv[]) /*{{{*/
             case 'A': mask = CPM_ATTR_ARCV; break;
 	    default: fprintf(stderr, "%s: Unknown attribute %c\n", cmd, attrs[n]);
                      exit(1);
-          } 
+          }
           if (m) attrib &= ~mask; else attrib |= mask;
 	}
         rc = cpmAttrSet(&ino, attrib);

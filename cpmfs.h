@@ -124,7 +124,7 @@ struct dsEntry
   char hour;
   char minute;
 };
-          
+
 struct dsDate
 {
   struct dsEntry create;
@@ -145,7 +145,7 @@ struct cpmSuperBlock
   int skew;
   int boottrk;
   off_t offset;
-  off_t partition;
+  //int partition;
   int type;
   int size;
   int extents; /* logical extents per physical extent */

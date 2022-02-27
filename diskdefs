@@ -298,8 +298,7 @@ diskdef gide-cfb
   maxdir 1024
   skew 0
   boottrk 0
-# Start of second partition
-  offset 1000trk
+  offset 1000trk    # Start of second partition
   os 3
 end
 
@@ -1898,5 +1897,5 @@ diskdef z280rcP
   skew 0
   boottrk 0
   os 3
-  offset 64trk
+  offset 64trk  # Start of second partition
 end

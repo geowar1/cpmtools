@@ -98,9 +98,10 @@ Al	Al	Al	Al	Al	Al	Al	Al	Al	Al	Al	Al	Al	Al	Al	Al
 \fBSt\fP is the status; possible values are:
 .RS
 .sp
-0\*(en15: used for file, status is the user number
+0\*(en15: used for file, status is the user number.  CP/M 2.2 only documents
+0\*(en15 and CCP and PIP only offer those, but the BDOS allows to use 0\*(en31.
 .br
-16\*(en31: used for file, status is the user number (P2DOS)
+16\*(en31: used for file, status is the user number (P2DOS, CP/M 2.2)
 or used for password extent (CP/M 3 or higher)
 .br
 32: disc label
