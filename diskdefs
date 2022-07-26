@@ -1897,5 +1897,31 @@ diskdef z280rcP
   skew 0
   boottrk 0
   os 3
-  offset 64trk  # Start of second partition
+  offset 64trk
+end
+
+# Z80SBC - John Monahan's Z80 Single Board Computer
+# <http://www.s100computers.com/My%20System%20Pages/SBC%20Z80%20Board/SBC%20Z80%20CPU%20Board.htm>
+#
+diskdef s100ide
+  seclen 512
+  tracks 256
+  sectrk 64
+  blocksize 2048
+  maxdir 1024
+  skew 0
+  boottrk 1
+  os 3
+end
+
+diskdef s100ideP
+  seclen 512
+  tracks 256
+  sectrk 64
+  blocksize 2048
+  maxdir 1024
+  skew 0
+  boottrk 0
+  os 3
+  offset 256trk
 end
