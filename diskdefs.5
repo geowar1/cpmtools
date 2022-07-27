@@ -14,24 +14,26 @@ A diskdefs file consists of one or more entries of the format:
 .PP
 .nf
 .RS
-\fBdiskdef\fP \fIname\fP
-  \fBseclen\fP \fIsize\fP
-  \fBtracks\fP \fIcount\fP
-  \fBsectrk\fP \fIcount\fP
-  \fBblocksize\fP \fIsize\fP
-  \fBmaxdir\fP \fIcount\fP
-  \fBboottrk\fP \fInumber\fP
-  [\fBskew\fP \fInumber\fP]
-  [\fBskewtab\fP \fIsector\fP[\fB,\fP\fIsector\fP]...]
-  [\fBos\fP \fB2.2\fP|\fB3\fP|\fBisx\fP|\fBp2dos\fP|\fBzsys\fP]
-  [\fBoffset\fP \fIsize\fP]
-  [\fBlogicalextents\fP \fIcount\fP]
-  [\fBlibdsk:format\fP \fIname\fP]
-\fBend\fP
+\fBdiskdef\fP \fIname\fP                    # disk format name
+  \fBseclen\fP \fIsize\fP                   # bytes per physical sector
+  \fBtracks\fP \fIcount\fP                  # the number of tracks per disk
+  \fBsectrk\fP \fIcount\fP                  # the number of physical sectors per track
+  \fBblocksize\fP \fIsize\fP                # the number of bytes per block
+  \fBmaxdir\fP \fIcount\fP                  # the number of directory entries - 1
+  \fBboottrk\fP \fInumber\fP                # the number of boot tracks
+  [\fBskew\fP \fInumber\fP]                 # the sector skew
+  [\fBskewtab\fP \fIsector\fP[\fB,\fP\fIsector\fP]...]  # the sector skew table
+  [\fBos\fP \fB2.2\fP|\fB3\fP|\fBisx\fP|\fBp2dos\fP|\fBzsys\fP      # the OS
+  [\fBoffset\fP \fIsize\fP]                 # the number of bytes per partition
+  [\fBlogicalextents\fP \fIcount\fP]        # the number of logical extents per drive
+  [\fBlibdsk:format\fP \fIname\fP]          # the libdsk format this is based on (if any)
+\fBend\fP<
 .RE
 .fi
 .PP
 \fBskew\fP and \fBskewtab\fP must only be used exclusively.
+.LP
+Specifiers of \fIK\fP, \fIM\fP, \fIT\fP or \fIS\fP may be appended to denote kilobytes, megabytes, tracks or sectors. If provided, a specifier must immediately follow the numeric value with no whitespace.  For convenience upper and lower case are both accepted and only the first letter is significant, thus 2KB, 8MB, 1000trk and 16sec are valid values.  The \fBoffset\fP must appear subsequent to \fBseclen\fP and \fBsectrk\fP values for the sector and track units to work.
 .PP
 Comments are marked with a leading hash or semicolon and extend to the end of the line.
 .\"}}}

@@ -1036,7 +1036,7 @@ int cpmReadSuper(struct cpmSuperBlock *d, struct cpmInode *root, const char *for
   else diskdefReadSuper(d,format);
   if (partition > 0) {
     d->offset *= partition;
-    //printf("\npartition: %d (0x%X), *offset: %lld (0x%llX)\n", partition, partition, d->offset, d->offset);
+    //fprintf(stderr,"partition: %d (0x%X), *offset: %lld (0x%llX)\n", partition, partition, d->offset, d->offset);
   }
   boo = Device_setGeometry(&d->dev,d->secLength,d->sectrk,d->tracks,d->offset,d->libdskGeometry);
   if (boo) return -1;

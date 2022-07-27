@@ -40,7 +40,7 @@ static int mkfs(struct cpmSuperBlock *drive, const char *name, const char *forma
 		return -1;
 	}
 	for (int p = 0; p < partition; p++) {
-		//printf("partition # %u", p);
+		//fprintf(stderr,"partition # %u, ", p);
 		/*}}}*/
 		if (!p) {
 			/* write system tracks */ /*{{{*/
@@ -101,7 +101,7 @@ static int mkfs(struct cpmSuperBlock *drive, const char *name, const char *forma
 			if (!p) {		// if this is the first partition
 				bytes+=trkbytes*drive->boottrk;	//add the number of boot track/sector bytes
 			}
-			// printf("bytes: %u (0x%X), offset: %llu (0x%llX)",
+			// fprintf(stderr,"bytes: %u (0x%X), offset: %llu (0x%llX)\n",
 			// 	bytes, bytes, drive->offset, drive->offset);
 
 			for (i = bytes; i < drive->offset; i += 128) {
