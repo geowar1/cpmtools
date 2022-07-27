@@ -40,7 +40,7 @@ const char *Device_open(struct Device *this, const char *filename, int mode, con
 
   /* Assume driver name & format name both fit in 80 characters, rather than
    * malloccing the exact size */
-  if (deviceOpts == NULL) 
+  if (deviceOpts == NULL)
   {
     e = dsk_open(&this->dev, filename, NULL, NULL);
     format = NULL;
@@ -60,14 +60,14 @@ const char *Device_open(struct Device *this, const char *filename, int mode, con
   this->opened = 0;
   if (e) return dsk_strerror(e);
   this->opened = 1;
-  if (format) 
+  if (format)
   {
     boo = lookupFormat(&this->geom, format);
     if (boo) return boo;
   }
-  else 
+  else
   {
-    dsk_getgeom(this->dev, &this->geom); 
+    dsk_getgeom(this->dev, &this->geom);
   }
   return NULL;
 }
@@ -88,22 +88,22 @@ const char *Device_setGeometry(struct Device *this, int secLength, int sectrk, i
   {
     return lookupFormat(&this->geom, libdskGeometry);
   }
-  
+
   this->geom.dg_secsize   = secLength;
   this->geom.dg_sectors   = sectrk;
   /* Did the autoprobe guess right about the number of sectors & cylinders? */
   if (this->geom.dg_cylinders * this->geom.dg_heads == tracks) return NULL;
   /* Otherwise we guess: <= 43 tracks: single-sided. Else double. This
    * fails for 80-track single-sided if there are any such beasts */
-  if (tracks <= 43) 
+  if (tracks <= 43)
   {
     this->geom.dg_cylinders = tracks;
-    this->geom.dg_heads     = 1; 
+    this->geom.dg_heads     = 1;
   }
   else
   {
     this->geom.dg_cylinders = tracks/2;
-    this->geom.dg_heads     = 2; 
+    this->geom.dg_heads     = 2;
   }
   return NULL;
 }

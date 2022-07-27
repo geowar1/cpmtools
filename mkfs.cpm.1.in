@@ -7,6 +7,8 @@ mkfs.cpm \- make a CP/M file system
 .B mkfs.cpm
 .RB [ \-f
 .IR format ]
+.RB [ \-P
+.IR partitions ]
 .RB [ \-b
 .IR boot ]
 .RB [ \-L
@@ -21,6 +23,8 @@ mkfs.cpm \- make a CP/M file system
 .SH OPTIONS \"{{{
 .IP "\fB\-f\fP \fIformat\fP"
 Use the given CP/M disk \fIformat\fP instead of the default format.
+.IP \fB\-P\fP
+Initialize the specified number of partitions.
 .IP "\fB\-b\fP \fIbootblock\fP"
 Write the contents of the file \fIbootblock\fP to the system tracks
 instead of filling them with 0xe5.  This option can be used up to four

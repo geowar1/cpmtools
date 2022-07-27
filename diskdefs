@@ -1886,17 +1886,6 @@ diskdef z280rc
   skew 0
   boottrk 1
   os 3
-end
-
-diskdef z280rcP
-  seclen 512
-  tracks 64
-  sectrk 256
-  blocksize 4096
-  maxdir 512
-  skew 0
-  boottrk 0
-  os 3
   offset 64trk
 end
 
@@ -1906,22 +1895,11 @@ end
 diskdef s100ide
   seclen 512
   tracks 256
-  sectrk 64
+  sectrk 63
   blocksize 2048
   maxdir 1024
   skew 0
   boottrk 1
-  os 3
-end
-
-diskdef s100ideP
-  seclen 512
-  tracks 256
-  sectrk 64
-  blocksize 2048
-  maxdir 1024
-  skew 0
-  boottrk 0
   os 3
   offset 256trk
 end
