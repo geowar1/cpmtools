@@ -39,8 +39,11 @@ static int mkfs(struct cpmSuperBlock *drive, const char *name, const char *forma
 		boo=strerror(errno);
 		return -1;
 	}
+	if (!partition) {
+		partition++;	//so we'll always do one partition
+	}
 	for (int p = 0; p < partition; p++) {
-		//fprintf(stderr,"partition # %u, ", p);
+		//printf("partition # %u\n", p);
 		/*}}}*/
 		if (!p) {
 			/* write system tracks */ /*{{{*/
@@ -55,8 +58,17 @@ static int mkfs(struct cpmSuperBlock *drive, const char *name, const char *forma
 		}
 		/*}}}*/
 		/* write directory */ /*{{{*/
-		memset(buf,0xe5,128);
+		memset(buf, 0x00, 128);
+		buf[0*32]=0xE5;	//mark all directory entries as unused
+		buf[1*32]=0xE5;
+		buf[2*32]=0xE5;
+		buf[3*32]=0xE5;
+
 		bytes=drive->maxdir*32;
+
+		// printf("	maxdir: %u, bytes: %u, trkbytes: %u, mod: %u\n",
+		// 	drive->maxdir, bytes, trkbytes, bytes % trkbytes);
+
 		if (bytes%trkbytes) bytes=((bytes+trkbytes)/trkbytes)*trkbytes;
 		if (timeStamps && (drive->type==CPMFS_P2DOS || drive->type==CPMFS_DR3)) buf[3*32]=0x21;
 		memcpy(firstbuf,buf,128);
@@ -97,22 +109,24 @@ static int mkfs(struct cpmSuperBlock *drive, const char *name, const char *forma
 			close(fd);
 			return -1;
 		}
-		if (partition) {	// if we're doing more partitions
-			if (!p) {		// if this is the first partition
-				bytes+=trkbytes*drive->boottrk;	//add the number of boot track/sector bytes
-			}
-			// fprintf(stderr,"bytes: %u (0x%X), offset: %llu (0x%llX)\n",
-			// 	bytes, bytes, drive->offset, drive->offset);
+		if (!p) {		// if this is the first partition
+			// printf("	trkbytes: %u (0x%X), boottrk: %u (0x%X)\n",
+			// 	trkbytes, trkbytes, drive->boottrk, drive->boottrk);
+			bytes+=trkbytes*drive->boottrk;	//add the number of boot track/sector bytes
+		}
+		// printf("	bytes: %u (0x%X), offset: %llu (0x%llX)\n",
+		// 	bytes, bytes, drive->offset, drive->offset);
 
-			for (i = bytes; i < drive->offset; i += 128) {
-				if (write(fd, buf, 128) != 128) {
-					boo = strerror(errno);
-					close(fd);
-					return -1;
-				}
+		memset(buf,0xE5,128);
+		for (i = bytes; i < drive->offset; i += 128) {
+			if (write(fd, buf, 128) != 128) {
+				boo = strerror(errno);
+				close(fd);
+				return -1;
 			}
 		}
-	}
+	}	//next p
+
 	/*}}}*/
 	/* close image file */ /*{{{*/
 	if (close(fd)==-1)
@@ -230,7 +244,7 @@ int main(int argc, char *argv[]) /*{{{*/
 		fprintf(stderr,"%s: can not allocate boot track buffer: %s\n",cmd,strerror(errno));
 		exit(1);
 	}
-	memset(bootTracks,0xe5,bootTrackSize);
+	memset(bootTracks,0xE5,bootTrackSize);
 	used=0;
 	for (c=0; c<4 && boot[c]; ++c)
 	{
